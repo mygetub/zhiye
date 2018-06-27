@@ -292,7 +292,7 @@ class AuthController extends Controller
         if(empty($loginData))
         {
             return Redirect::to('auth/password/sendmail')
-                ->withError('请输入正确的邮箱');
+                ->withError('请输入填写参数');
         }
         $email = $loginData['email'];
         $verifycode = array_pull($loginData, 'verifycode');
@@ -306,19 +306,32 @@ class AuthController extends Controller
         if (!Config::get('setting.captcha_login_disabled') && $verifycode != Session::get('phrase')) {
             // instructions if user phrase is good
             return Redirect::to('auth/password/sendmail')
+                ->withInput(Input::except('verifycode'))
                 ->withError(trans('hifone.captcha.failure'));
         }
+
+        $code = rand(pow(10,(6-1)), pow(10,6)-1);
+        $email_token = md5($email.$code);
+        $email_log_data = array(
+            'from'=>'2391458089@qq.com',
+            'to_mail'=>$email,
+            'code'=>$email_token,
+            'created_at'=>date('Y-m-d H:i:s',time())
+        );
+        DB::table('email_password')->insert($email_log_data);
         $userInfo = DB::table('users')->where(array('email'=>$email))->first();
         if($userInfo)
         {
            Mail::raw('邮件内容', function($message) {
              //指定发送人的帐号和名称
-             $message->from('2391458089@qq.com', '这是一个生气的');
+             $message->from('2391458089@qq.com', '职业之家');
             //指定邮件主题
-             $message->subject('主题测试');
+             $message->subject('找回密码');
             //收件人
              $message->to('763128815@qq.com');
             });
+            Session::put('email_password_token', $email_token,1);
+
             return Redirect::to('auth/password/sendmail')
                 ->withSuccess('邮件发送成功');
         }else
@@ -326,19 +339,5 @@ class AuthController extends Controller
             return Redirect::to('auth/password/sendmail')
                 ->withError('该邮箱未注册');
         }
-//        $user = Auth::user();
-//        if(!isset($user)|| !$user->email)
-//        {
-//            return Redirect::back()
-//                ->withError('邮箱不存在.');
-//        }
-//        Mail::raw('邮件内容', function($message) {
-//            //指定发送人的帐号和名称
-//            $message->from('2391458089@qq.com', '这是一个生气的');
-//            //指定邮件主题
-//            $message->subject('主题测试');
-//            //收件人
-//            $message->to('763128815@qq.com');
-//        });
     }
 }
