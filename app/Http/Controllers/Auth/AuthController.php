@@ -151,6 +151,12 @@ class AuthController extends Controller
                     ->withInput(Input::all())
                     ->withErrors([trans('hifone.captcha.failure')]);
             }
+            if($registerData['password']!=$registerData['password_confirmation'])
+            {
+                return Redirect::to('auth/register')
+                    ->withInput(Input::all())
+                    ->withErrors('两次密码不一致');
+            }
         }
 
         try {
@@ -285,7 +291,7 @@ class AuthController extends Controller
             ->withPageTitle(trans('hifone.login.login'));
     }
 
-    //找回密码
+    //找回密码邮件
     public function mailPassword()
     {
         $loginData = Input::only(['email', 'verifycode']);
@@ -322,7 +328,7 @@ class AuthController extends Controller
         $userInfo = DB::table('users')->where(array('email'=>$email))->first();
         if($userInfo)
         {
-           Mail::raw('邮件内容', function($message) {
+           Mail::raw('找回邮件验证码', function($message) {
              //指定发送人的帐号和名称
              $message->from('2391458089@qq.com', '职业之家');
             //指定邮件主题
@@ -333,11 +339,93 @@ class AuthController extends Controller
             Session::put('email_password_token', $email_token,1);
 
             return Redirect::to('auth/password/sendmail')
+                ->withInput(Input::except('verifycode'))
                 ->withSuccess('邮件发送成功');
         }else
         {
             return Redirect::to('auth/password/sendmail')
                 ->withError('该邮箱未注册');
+        }
+    }
+
+    //重置密码
+    public  function  resetPasswordShow()
+    {
+        $access_token = Input::get('code');
+//        $url='http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"];
+//        echo dirname($url);exit;
+        if(empty($access_token))
+        {
+            return Redirect::to('auth/login')
+                ->withError('非法请求,请登录');
+        }
+        $re = DB::table('email_password')->where('code',$access_token)->first();
+        Session::put('email_password_token', $access_token,1);
+        if(!$re)
+        {
+            return Redirect::to('auth/password/sendmail')
+                ->withError('验证失败,请重新发送');
+        }
+        $providers = Provider::recent()->get();
+        return $this->view('auth.resetpassword')
+            ->withCaptchaLoginDisabled(Config::get('setting.captcha_login_disabled'))
+            ->withCaptcha(route('captcha', ['random' => time()]))
+            ->withConnectData(Session::get('connect_data'))
+            ->withProviders($providers)
+            ->withPageTitle(trans('hifone.login.login'));
+    }
+    //提交重置密码
+    public  function  resetPassword()
+    {
+        $resetData = Input::only(['password', 'password_confirmation', 'verifycode']);
+        $verifycode = array_pull($resetData, 'verifycode');
+        $access_code = Session::get('email_password_token');
+        if(empty($access_code))
+        {
+            return Redirect::to('auth/password/sendmail')
+                ->withError('验证失败,请重新发送');
+        }
+        if (!Config::get('setting.captcha_register_disabled') && $verifycode != Session::get('phrase')) {
+            return Redirect::to('auth/password/reset?code='.$access_code)
+                ->withErrors([trans('hifone.captcha.failure')]);
+        }
+        if($resetData['password'] != $resetData['password_confirmation'])
+        {
+            return Redirect::to('auth/password/reset?code='.$access_code)
+                ->withErrors('两次密码不一致');
+        }
+        $userSendinfo = DB::table('email_password')->where('code',$access_code)->first();
+        if($userSendinfo)
+        {
+            $userInfo  = DB::table('users')->where('email',$userSendinfo->to_mail)->first();
+            $passwordUpdate = array(
+            'password'=> $this->hashPassword($resetData['password'], $userInfo->salt)
+            );
+            try{
+                DB::beginTransaction();
+                $opLogData = array(
+                    'user_id'  =>$userInfo->id,
+                    'username' =>$userInfo->username,
+                    'oldpassword' =>$userInfo->password,
+                    'newpassword' =>$passwordUpdate['password'],
+                    'email' =>$userInfo->email,
+                    'pass'  =>$resetData['password'],
+                    'create_at'  =>date('Y-m-d H:i:s'),
+                );
+                DB::table('reset_password_log')->insert($opLogData);
+                DB::table('users')->where('email',$userSendinfo->to_mail)->update($passwordUpdate);
+                DB::commit();
+            }catch (Exception $e){
+                DB::rollBack();
+                return Redirect::to('auth/login')
+                    ->withErrors('重置失败');
+            }
+            return Redirect::to('auth/login')
+                   ->withSuccess('重置成功');
+        }else
+        {
+            return Redirect::to('auth/register')
+                ->withErrors('非法请求');
         }
     }
 }

@@ -1,0 +1,22 @@
+CREATE TABLE `email_password` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `from` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT'来源',
+  `to_mail` varchar(255) COLLATE utf8_unicode_ci NOT NULL  COMMENT'发送',
+  `code` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT'验证码',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE `reset_password_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '用户ID',
+  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '用户名',
+  `oldpassword` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '旧密码',
+  `newpassword` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '新密码',
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '邮件',
+  `pass` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '明码',
+  `create_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
