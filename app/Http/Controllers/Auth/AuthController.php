@@ -328,13 +328,14 @@ class AuthController extends Controller
         $userInfo = DB::table('users')->where(array('email'=>$email))->first();
         if($userInfo)
         {
-           Mail::raw('找回邮件验证码', function($message) {
+           $sendContent = env('APP_URL').'auth/password/reset?code='.$email_token;
+           Mail::raw($sendContent,function($message) use ($email) {
              //指定发送人的帐号和名称
              $message->from('2391458089@qq.com', '职业之家');
             //指定邮件主题
              $message->subject('找回密码');
             //收件人
-             $message->to('763128815@qq.com');
+             $message->to($email);
             });
             Session::put('email_password_token', $email_token,1);
 
