@@ -21,6 +21,9 @@
 							<input type="text" class="form-control" name="email" value="{{ Input::old('email') }}" placeholder="{{ trans('hifone.users.email') }}">
 						</div>
 						<div class="form-group">
+							<input type="text" class="form-control" name="phone" value="{{ Input::old('phone') }}"  placeholder="{{ trans('hifone.users.phone') }}">
+						</div>
+						<div class="form-group">
 							<input type="password" class="form-control" name="password" placeholder="{{ trans('hifone.users.password') }}">
 						</div>
 						<div class="form-group">

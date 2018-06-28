@@ -91,13 +91,13 @@ return [
             'pt2_title' => '选择节点',
             'pt2_desc'  => '请为你的主题选择一个节点。恰当的归类会让你发布的信息更有用。',
             'pt3_title' => '正文',
-            'pt3_desc'  => 'Hifone 支持 <span style="font-family: Consolas, \'Panic Sans\', mono"><a href="https://help.github.com/articles/github-flavored-markdown" target="_blank">GitHub Flavored Markdown</a></span> 文本标记语法。你可以在页面下方实时预览正文的实际渲染效果。',
+            'pt3_desc'  => '【职业之家】 支持 <span style="font-family: Consolas, \'Panic Sans\', mono"><a href="/markdown" target="_blank">MarkDown</a></span> 文本标记语法。你可以在页面下方<b style=\'color:red\'>实时预览</b>正文的实际渲染效果。',
         ],
         //Community Guidlines
         'community_guidelines' => [
             'title'     => '社区指导原则',
             'cg1_title' => '尊重原创',
-            'cg1_desc'  => '请不要在 Hifone 发布任何盗版链接，包括软件、音乐、电影等。',
+            'cg1_desc'  => '请不要在 【职业之家】 发布任何盗版链接，包括软件、音乐、电影等。',
             'cg2_title' => '友好互助',
             'cg2_desc'  => '保持对陌生人的友善。用知识去帮助别人。',
         ],
@@ -141,7 +141,7 @@ return [
         'tags'      => '标签',
         'name'      => '标签名',
         'hot'       => '热门标签',
-        'tags_help' => '请填写标签，多个标签之间用 , 分隔',
+        'tags_help' => '填写标签，按Enter键,可添加多个',
     ],
 
 // 用户
@@ -150,6 +150,7 @@ return [
         'id'                        => 'ID',
         'username'                  => '用户名',
         'email'                     => '邮箱地址',
+        'phone'                     => '手机号',
         'avatar'                    => '头像',
         'avatar_upload_success'     => '头像更新成功',
         'nickname'                  => '昵称',
@@ -184,7 +185,7 @@ return [
         'password_current'          => '请输入您当前的密码',
         'password_new'              => '请输入新密码',
         'password_new_confirmation' => '请再次输入新密码',
-        'password_update'           => '密码更新',
+        'password_update'           => 'Update password',
         'select_language'           => 'Select Language',
         'register_date'             => '注册:',
         'add'                       => [
@@ -297,17 +298,17 @@ return [
             'bound'           => '绑定 :provider 账号',
             //OAuth Messages for Login
             'login' => [
-                'note' => 'After successful login, your :provider Account for :name is connected with your Hifone Account.',
+                'note' => 'After successful login, your :provider Account for :name is connected with your 职业之家 Account.',
             ],
             //OAuth Landing Page
             'landing' => [
                 'title'    => '第三方接入',
                 'welcome'  => '，你好。还差最后一步完成注册。请选择：',
-                'choice_1' => '1. 已有Hifone账号',
+                'choice_1' => '1. 已有[职业之家]账号',
                 'button_1' => '直接登录',
-                'choice_2' => '2. 还没有Hifone账号',
+                'choice_2' => '2. 还没有[职业之家]账号',
                 'button_2' => '自动注册',
-                'note'     => '以上两种方式都会自动将:provider账号: :name 与你的Hifone账号进行绑定。',
+                'note'     => '以上两种方式都会自动将:provider账号: :name 与你的[职业之家]账号进行绑定。',
             ],
             'errors' => [
                 'InvalidState' => 'Authentication failed.',

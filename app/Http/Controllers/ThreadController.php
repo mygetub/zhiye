@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Input;
 use Redirect;
+use DB;
 
 class ThreadController extends Controller
 {
@@ -40,7 +41,7 @@ class ThreadController extends Controller
     {
         parent::__construct();
 
-        $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->middleware('auth', ['except' => ['index', 'show','markdown']]);
     }
 
     /**
@@ -71,13 +72,13 @@ class ThreadController extends Controller
     public function show(Thread $thread)
     {
         $this->breadcrumb->push([
-                $thread->node->name => $thread->node->url,
-                $thread->title      => $thread->url,
+            $thread->node->name => $thread->node->url,
+            $thread->title      => $thread->url,
         ]);
 
         $replies = $thread->replies()
-                    ->orderBy('id', 'asc')
-                    ->paginate(Config::get('setting.replies_per_page', 30));
+            ->orderBy('id', 'asc')
+            ->paginate(Config::get('setting.replies_per_page', 30));
 
         $repository = app('repository');
         $repository->pushCriteria(new BelongsToNode($thread->node_id));
@@ -101,12 +102,13 @@ class ThreadController extends Controller
     {
         $node = Node::find(Input::query('node_id'));
         $sections = Section::orderBy('order')->get();
-
+        $tags = DB::table('tags')->get();
         $this->breadcrumb->push(trans('hifone.threads.add'), route('thread.create'));
 
         return $this->view('threads.create_edit')
             ->withSections($sections)
-            ->withNode($node);
+            ->withNode($node)
+            ->with('tags',$tags);
     }
 
     /**
@@ -149,13 +151,14 @@ class ThreadController extends Controller
     {
         $this->needAuthorOrAdminPermission($thread->user_id);
         $sections = Section::orderBy('order')->get();
-
+        $tags = DB::table('tags')->get();
         $thread->body = $thread->body_original;
 
         return $this->view('threads.create_edit')
             ->withThread($thread)
             ->withSections($sections)
-            ->withNode($thread->node);
+            ->withNode($thread->node)
+            ->with('tags',$tags);
     }
 
     /**

@@ -142,7 +142,7 @@ class AuthController extends Controller
             ];
             $from = 'provider';
         } else {
-            $registerData = Input::only(['username', 'email', 'password', 'password_confirmation', 'verifycode']);
+            $registerData = Input::only(['username', 'email', 'password', 'password_confirmation','phone', 'verifycode']);
 
             $verifycode = array_pull($registerData, 'verifycode');
             if (!Config::get('setting.captcha_register_disabled') && $verifycode != Session::get('phrase')) {
@@ -197,6 +197,7 @@ class AuthController extends Controller
             'email'        => $data['email'],
             'salt'         => $salt,
             'password'     => $password,
+            'phone'     => $data['phone'],
         ]);
 
         return $user;

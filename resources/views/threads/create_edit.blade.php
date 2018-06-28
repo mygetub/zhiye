@@ -50,6 +50,10 @@
                                                               'placeholder' => trans('hifone.markdown_support')]) !!}
                         </div>
 
+                        {{--<div class="form-group">--}}
+                        {{--</div>--}}
+
+
                         <div class="form-group">
                             <select class="form-control js-tag-tokenizer" multiple="multiple" name="thread[tags][]">
                                 @if(isset($thread))
@@ -57,6 +61,9 @@
                                         <option selected="selected">{{ $tag->name }}</option>
                                     @endforeach
                                 @endif
+                                @foreach($tags as $item =>$tag)
+                                    <option>{{ $tag->name }}</option>
+                                @endforeach
                             </select>
                             <small>
                                 {{ trans('hifone.tags.tags_help') }}
