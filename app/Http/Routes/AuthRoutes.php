@@ -68,7 +68,12 @@ class AuthRoutes
                 'middleware' => ['guest'],
                 'uses'       => 'AuthController@mailPassword'
             ]);
+            $router->post('password/reset', [
+                'middleware' => ['guest'],
+                'uses'       => 'AuthController@resetPassword'
+            ]);
             $router->get('password/sendmail', 'AuthController@sendmail');
+            $router->get('password/reset', 'AuthController@resetPasswordShow');
         });
     }
 }
