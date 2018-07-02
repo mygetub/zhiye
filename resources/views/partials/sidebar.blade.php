@@ -144,6 +144,7 @@
   </div>
   <div class="panel-body">
     {!! (isset($tip) && $tip) ? $tip->body : null !!}
+      这里主要是在外工作的年轻人，在这里你可以讨论工作，感情，创业以及认识老乡，可以和更多的人结伴而行。
   </div>
 </div>
 

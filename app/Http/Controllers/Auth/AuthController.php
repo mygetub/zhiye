@@ -329,7 +329,7 @@ class AuthController extends Controller
         $userInfo = DB::table('users')->where(array('email'=>$email))->first();
         if($userInfo)
         {
-           $sendContent = env('APP_URL').'auth/password/reset?code='.$email_token;
+           $sendContent = env('APP_URL').'/auth/password/reset?code='.$email_token;
            Mail::raw($sendContent,function($message) use ($email) {
              //指定发送人的帐号和名称
              $message->from('2391458089@qq.com', '职业之家');
